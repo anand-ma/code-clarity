@@ -35,9 +35,9 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, placeholder = 
 
   return (
     <div className={cn("relative rounded-md border bg-editor-bg", className)}>
-      <div className="flex">
+      <div className="flex h-[300px]">
         {/* Line numbers column */}
-        <div className="flex-none w-10 bg-editor-line border-r border-muted text-xs text-muted-foreground py-3">
+        <div className="flex-none w-10 bg-editor-line border-r border-muted text-xs text-muted-foreground py-3 overflow-hidden">
           {lines.map((_, i) => (
             <div key={i} className="h-6 flex items-center justify-center">{i + 1}</div>
           ))}
@@ -53,7 +53,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, placeholder = 
             onBlur={() => setIsFocused(false)}
             onKeyDown={handleKeyDown}
             className={cn(
-              "font-mono text-sm min-h-[300px] w-full resize-none bg-transparent border-0 p-3 focus-visible:ring-0 focus-visible:ring-offset-0",
+              "font-mono text-sm h-full w-full resize-none bg-transparent border-0 p-3 focus-visible:ring-0 focus-visible:ring-offset-0",
               isFocused ? "border-primary" : "border-muted"
             )}
             style={{ 
