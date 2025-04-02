@@ -79,6 +79,10 @@ const detectLanguage = (code: string): string => {
   // Simple language detection based on file extension or content
   const firstLine = code.split('\n')[0].toLowerCase();
   
+  // Check file extension in the first line (e.g. from comments or imports)
+  if (firstLine.includes('.ts') && !firstLine.includes('.tsx')) return 'typescript';
+  if (firstLine.includes('.tsx')) return 'tsx';
+  
   // Check for shebang
   if (firstLine.startsWith('#!/')) {
     if (firstLine.includes('python')) return 'python';
@@ -87,15 +91,33 @@ const detectLanguage = (code: string): string => {
     if (firstLine.includes('ruby')) return 'ruby';
   }
 
+  // Check for TypeScript-specific patterns
+  if (
+    code.includes('interface ') ||
+    code.includes('type ') ||
+    code.includes(': string') ||
+    code.includes(': number') ||
+    code.includes(': boolean') ||
+    code.includes(': Promise<') ||
+    /import.*from ['"]@.*['"]/.test(code) // Matches package imports
+  ) {
+    return 'typescript';
+  }
+
   // Check for common language patterns
   if (code.includes('<?php')) return 'php';
   if (code.includes('<html') || code.includes('<!DOCTYPE')) return 'markup';
-  if (code.includes('import React')) return 'tsx';
+  if (code.includes('import React') || code.includes('React.')) return 'tsx';
   if (code.includes('package main')) return 'go';
   
   // Default to JavaScript if no other language is detected
   return 'javascript';
 };
+
+// Initialize Prism
+if (typeof window !== 'undefined') {
+  Prism.manual = true;
+}
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ 
   value, 
@@ -110,8 +132,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
 
   useEffect(() => {
     // Force Prism to initialize languages
-    Prism.highlightAll();
-  }, []);
+    if (typeof window !== 'undefined') {
+      Prism.highlightAll();
+    }
+  }, [value, detectedLanguage]);
   
   // Handle tab key in editor
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -134,15 +158,23 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   const highlightCode = (code: string) => {
     try {
       if (!code) return ''; // Handle empty code
-      if (!Prism.languages[detectedLanguage]) {
+      
+      // Get the grammar for the detected language
+      const grammar = Prism.languages[detectedLanguage] || Prism.languages.javascript;
+      
+      if (!grammar) {
         console.warn(`Language '${detectedLanguage}' not found, falling back to plain text`);
         return code;
       }
-      return Prism.highlight(
+
+      // Force a re-highlight
+      const highlighted = Prism.highlight(
         code,
-        Prism.languages[detectedLanguage],
+        grammar,
         detectedLanguage
       );
+
+      return highlighted;
     } catch (error) {
       console.error('Error highlighting code:', error);
       return code; // Fallback to plain text on error
@@ -172,6 +204,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
               onBlur={() => setIsFocused(false)}
               className={cn(
                 "font-mono text-sm w-full h-full",
+                "prose prose-sm prose-slate dark:prose-invert",
                 isFocused ? "border-primary" : "border-muted"
               )}
               style={{
@@ -179,10 +212,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
                 minHeight: '100%',
                 backgroundColor: 'transparent',
                 whiteSpace: 'pre',
-                overflowWrap: 'normal'
+                overflowWrap: 'normal',
+                padding: '12px'
               }}
-              padding={12}
-              textareaClassName="focus:outline-none"
+              textareaClassName="focus:outline-none bg-transparent"
             />
           </div>
         </div>
