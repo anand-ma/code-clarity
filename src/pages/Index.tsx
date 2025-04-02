@@ -155,7 +155,7 @@ const Index = () => {
             <FileCode className="h-8 w-8 text-primary" />
             <div>
               <h1 className="text-2xl font-bold">Code Clarity</h1>
-              <p className="text-sm text-muted-foreground">Powered by Google Gemini AI</p>
+              <p className="text-sm text-muted-foreground">Powered by AI ❤️ </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
