@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,43 +8,40 @@ import { useToast } from "@/components/ui/use-toast";
 import CodeEditor from "@/components/CodeEditor";
 import ExplanationDisplay from "@/components/ExplanationDisplay";
 import { analyzeCode } from "@/services/aiService";
-
 const Index = () => {
   const [code, setCode] = useState("");
   const [explanation, setExplanation] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [activeTab, setActiveTab] = useState("editor");
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   const handleAnalyzeCode = async () => {
     if (!code.trim()) {
       toast({
         title: "No code to analyze",
         description: "Please enter some code in the editor.",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     setIsAnalyzing(true);
     try {
       const response = await analyzeCode(code);
-      
       if (response.error) {
         toast({
           title: "Analysis Failed",
           description: response.error,
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
-      
       setExplanation(response.text);
       toast({
         title: "Analysis Complete",
-        description: "Your code has been analyzed successfully.",
+        description: "Your code has been analyzed successfully."
       });
-      
+
       // Switch to the explanation tab on mobile
       if (window.innerWidth < 768) {
         setActiveTab("explanation");
@@ -55,19 +51,17 @@ const Index = () => {
       toast({
         title: "Analysis Failed",
         description: "An error occurred while analyzing your code. Please try again.",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setIsAnalyzing(false);
     }
   };
-
   const handleFetchSample = async () => {
     setIsAnalyzing(true);
     try {
       // Simulate fetching the sample file
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
       const sampleCode = `# Code simplified for demonstration purposes
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -96,25 +90,22 @@ def main():
 
 if __name__ == "__main__":
     main()`;
-      
       setCode(sampleCode);
       toast({
         title: "Sample Code Loaded",
-        description: "kathai-gen.py sample code has been loaded into the editor.",
+        description: "kathai-gen.py sample code has been loaded into the editor."
       });
     } catch (error) {
       toast({
         title: "Failed to Load Sample",
         description: "Could not load the sample code. Please try again.",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setIsAnalyzing(false);
     }
   };
-
-  return (
-    <div className="container p-4 py-6 md:py-10 max-w-7xl mx-auto">
+  return <div className="container p-4 py-6 md:py-10 max-w-7xl mx-auto">
       <header className="mb-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -124,14 +115,7 @@ if __name__ == "__main__":
               <p className="text-sm text-muted-foreground">Powered by Google Gemini AI</p>
             </div>
           </div>
-          <a 
-            href="https://github.com/anand-ma/kathai-gen" 
-            target="_blank" 
-            rel="noreferrer"
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <Github className="h-4 w-4" /> kathai-gen
-          </a>
+          
         </div>
         <Separator className="mt-6" />
       </header>
@@ -152,48 +136,27 @@ if __name__ == "__main__":
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <CodeEditor 
-                  value={code} 
-                  onChange={setCode} 
-                  className="min-h-[300px]" 
-                />
+                <CodeEditor value={code} onChange={setCode} className="min-h-[300px]" />
               </CardContent>
               <CardFooter className="flex gap-2 justify-between">
-                <Button 
-                  variant="outline" 
-                  onClick={handleFetchSample}
-                  disabled={isAnalyzing}
-                  className="text-sm"
-                >
+                <Button variant="outline" onClick={handleFetchSample} disabled={isAnalyzing} className="text-sm">
                   <DownloadCloud className="h-4 w-4 mr-2" />
                   Load Sample
                 </Button>
-                <Button 
-                  onClick={handleAnalyzeCode} 
-                  disabled={isAnalyzing} 
-                  className="text-sm"
-                >
-                  {isAnalyzing ? (
-                    <>
+                <Button onClick={handleAnalyzeCode} disabled={isAnalyzing} className="text-sm">
+                  {isAnalyzing ? <>
                       <Cpu className="h-4 w-4 mr-2 animate-spin" />
                       Analyzing...
-                    </>
-                  ) : (
-                    <>
+                    </> : <>
                       <Cpu className="h-4 w-4 mr-2" />
                       Analyze with Gemini
-                    </>
-                  )}
+                    </>}
                 </Button>
               </CardFooter>
             </Card>
           </TabsContent>
           <TabsContent value="explanation" className="mt-4">
-            <ExplanationDisplay 
-              explanation={explanation} 
-              isLoading={isAnalyzing} 
-              className="min-h-[300px]"
-            />
+            <ExplanationDisplay explanation={explanation} isLoading={isAnalyzing} className="min-h-[300px]" />
           </TabsContent>
         </Tabs>
       </div>
@@ -209,36 +172,21 @@ if __name__ == "__main__":
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <CodeEditor 
-                value={code} 
-                onChange={setCode} 
-                className="min-h-[500px]" 
-              />
+              <CodeEditor value={code} onChange={setCode} className="min-h-[500px]" />
             </CardContent>
             <CardFooter className="flex gap-2 justify-between">
-              <Button 
-                variant="outline" 
-                onClick={handleFetchSample}
-                disabled={isAnalyzing}
-              >
+              <Button variant="outline" onClick={handleFetchSample} disabled={isAnalyzing}>
                 <DownloadCloud className="h-4 w-4 mr-2" />
                 Load Sample
               </Button>
-              <Button 
-                onClick={handleAnalyzeCode} 
-                disabled={isAnalyzing}
-              >
-                {isAnalyzing ? (
-                  <>
+              <Button onClick={handleAnalyzeCode} disabled={isAnalyzing}>
+                {isAnalyzing ? <>
                     <Cpu className="h-4 w-4 mr-2 animate-spin" />
                     Analyzing...
-                  </>
-                ) : (
-                  <>
+                  </> : <>
                     <Cpu className="h-4 w-4 mr-2" />
                     Analyze with Gemini
-                  </>
-                )}
+                  </>}
               </Button>
             </CardFooter>
           </Card>
@@ -252,11 +200,7 @@ if __name__ == "__main__":
               </CardDescription>
             </CardHeader>
             <CardContent className="flex-grow">
-              <ExplanationDisplay 
-                explanation={explanation} 
-                isLoading={isAnalyzing} 
-                className="h-full"
-              />
+              <ExplanationDisplay explanation={explanation} isLoading={isAnalyzing} className="h-full" />
             </CardContent>
           </Card>
         </div>
@@ -266,8 +210,6 @@ if __name__ == "__main__":
         <p>This app simulates the use of Google Gemini AI for code analysis.</p>
         <p className="mt-1">In a production environment, it would connect to a real API.</p>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
