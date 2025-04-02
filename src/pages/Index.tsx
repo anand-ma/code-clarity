@@ -62,34 +62,7 @@ const Index = () => {
     try {
       // Simulate fetching the sample file
       await new Promise(resolve => setTimeout(resolve, 1000));
-      const sampleCode = `# Code simplified for demonstration purposes
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-def generate_story(prompt, max_length=1000):
-    model_name = "ai4bharat/indictrans2-indic-en-1B"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(model_name)
-    
-    inputs = tokenizer(prompt, return_tensors="pt")
-    outputs = model.generate(
-        inputs["input_ids"],
-        max_length=max_length,
-        temperature=0.7,
-        do_sample=True,
-        top_p=0.9,
-    )
-    
-    story = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    return story
-
-def main():
-    prompt = "ஒரு காலத்தில் ஒரு சிறிய கிராமத்தில்"  # "Once upon a time in a small village"
-    story = generate_story(prompt)
-    print(story)
-
-if __name__ == "__main__":
-    main()`;
+      const sampleCode = `https://raw.githubusercontent.com/anand-ma/kathai-gen/refs/heads/main/kathai-gen.py`;
       setCode(sampleCode);
       toast({
         title: "Sample Code Loaded",
