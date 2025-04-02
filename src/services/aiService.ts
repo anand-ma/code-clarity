@@ -12,10 +12,6 @@ export async function analyzeCode(code: string): Promise<AIServiceResponse> {
     // This is a simulation of what would happen with a real backend
     // In production, you would make an API call to your backend service
     
-    // First, simulate fetching the kathai-gen.py file
-    const kothaiGenPy = await fetchKathaiGenPy();
-    
-    // Then, simulate the AI explanation
     console.log('Analyzing code with Gemini AI...');
     
     // Simulate API delay
@@ -28,7 +24,7 @@ export async function analyzeCode(code: string): Promise<AIServiceResponse> {
       };
     }
     
-    if (code.includes('kathai-gen.py') || code.includes('kathai') || code === kothaiGenPy) {
+    if (code.includes('kathai-gen') || code.toLowerCase().includes('story generator')) {
       return {
         text: `# Kathai-Gen: Story Generator
 
@@ -74,40 +70,6 @@ For a more accurate analysis, I would need to examine the specific functionality
 }
 
 // Helper functions for the mock service
-async function fetchKathaiGenPy(): Promise<string> {
-  // In a real application, you would fetch this from the GitHub URL
-  return `
-# Code simplified for demonstration purposes
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-def generate_story(prompt, max_length=1000):
-    model_name = "ai4bharat/indictrans2-indic-en-1B"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(model_name)
-    
-    inputs = tokenizer(prompt, return_tensors="pt")
-    outputs = model.generate(
-        inputs["input_ids"],
-        max_length=max_length,
-        temperature=0.7,
-        do_sample=True,
-        top_p=0.9,
-    )
-    
-    story = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    return story
-
-def main():
-    prompt = "ஒரு காலத்தில் ஒரு சிறிய கிராமத்தில்"  # "Once upon a time in a small village"
-    story = generate_story(prompt)
-    print(story)
-
-if __name__ == "__main__":
-    main()
-  `;
-}
-
 function detectLanguage(code: string): string {
   if (code.includes('def ') && code.includes('import ')) return 'Python';
   if (code.includes('function') && code.includes('var ')) return 'JavaScript';

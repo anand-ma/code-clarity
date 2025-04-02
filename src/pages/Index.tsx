@@ -1,21 +1,25 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Github, FileCode, Cpu, DownloadCloud } from "lucide-react";
+import { Github, FileCode, Cpu, DownloadCloud, FileDown, Link as LinkIcon } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import CodeEditor from "@/components/CodeEditor";
 import ExplanationDisplay from "@/components/ExplanationDisplay";
 import { analyzeCode } from "@/services/aiService";
+import { Input } from "@/components/ui/input";
+
 const Index = () => {
   const [code, setCode] = useState("");
   const [explanation, setExplanation] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [activeTab, setActiveTab] = useState("editor");
-  const {
-    toast
-  } = useToast();
+  const [fileUrl, setFileUrl] = useState("");
+  const [isUrlLoading, setIsUrlLoading] = useState(false);
+  const { toast } = useToast();
+
   const handleAnalyzeCode = async () => {
     if (!code.trim()) {
       toast({
@@ -57,12 +61,16 @@ const Index = () => {
       setIsAnalyzing(false);
     }
   };
+
   const handleFetchSample = async () => {
     setIsAnalyzing(true);
     try {
-      // Simulate fetching the sample file
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const sampleCode = `https://raw.githubusercontent.com/anand-ma/kathai-gen/refs/heads/main/kathai-gen.py`;
+      // Fetch the sample file
+      const response = await fetch('https://raw.githubusercontent.com/anand-ma/kathai-gen/refs/heads/main/kathai-gen.py');
+      if (!response.ok) {
+        throw new Error('Failed to fetch sample file');
+      }
+      const sampleCode = await response.text();
       setCode(sampleCode);
       toast({
         title: "Sample Code Loaded",
@@ -78,6 +86,41 @@ const Index = () => {
       setIsAnalyzing(false);
     }
   };
+
+  const handleFetchFromUrl = async () => {
+    if (!fileUrl.trim()) {
+      toast({
+        title: "No URL provided",
+        description: "Please enter a URL to fetch from.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsUrlLoading(true);
+    try {
+      const response = await fetch(fileUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch from URL: ${response.statusText}`);
+      }
+      const fetchedCode = await response.text();
+      setCode(fetchedCode);
+      toast({
+        title: "Code Fetched Successfully",
+        description: `Code from ${fileUrl} has been loaded into the editor.`
+      });
+    } catch (error) {
+      console.error("Error fetching code:", error);
+      toast({
+        title: "Failed to Fetch Code",
+        description: "Could not load the code from the provided URL. Please check the URL and try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUrlLoading(false);
+    }
+  };
+
   return <div className="container p-4 py-6 md:py-10 max-w-7xl mx-auto">
       <header className="mb-8">
         <div className="flex items-center justify-between">
@@ -105,10 +148,38 @@ const Index = () => {
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">Code Editor</CardTitle>
                 <CardDescription>
-                  Paste your code or load the sample to analyze
+                  Paste your code, load a sample, or fetch from URL
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
+                <div className="flex flex-col space-y-2">
+                  <div className="flex space-x-2">
+                    <Input
+                      placeholder="Enter file URL (e.g., GitHub raw URL)"
+                      value={fileUrl}
+                      onChange={(e) => setFileUrl(e.target.value)}
+                      className="flex-grow"
+                    />
+                    <Button 
+                      variant="outline" 
+                      onClick={handleFetchFromUrl} 
+                      disabled={isUrlLoading || !fileUrl.trim()}
+                      className="whitespace-nowrap"
+                    >
+                      {isUrlLoading ? (
+                        <>
+                          <FileDown className="h-4 w-4 mr-2 animate-spin" />
+                          Fetching...
+                        </>
+                      ) : (
+                        <>
+                          <LinkIcon className="h-4 w-4 mr-2" />
+                          Fetch
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
                 <CodeEditor value={code} onChange={setCode} className="min-h-[300px]" />
               </CardContent>
               <CardFooter className="flex gap-2 justify-between">
@@ -141,10 +212,38 @@ const Index = () => {
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Code Editor</CardTitle>
               <CardDescription>
-                Paste your code or load the sample to analyze
+                Paste your code, load a sample, or fetch from URL
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
+              <div className="flex flex-col space-y-2">
+                <div className="flex space-x-2">
+                  <Input
+                    placeholder="Enter file URL (e.g., GitHub raw URL)"
+                    value={fileUrl}
+                    onChange={(e) => setFileUrl(e.target.value)}
+                    className="flex-grow"
+                  />
+                  <Button 
+                    variant="outline" 
+                    onClick={handleFetchFromUrl} 
+                    disabled={isUrlLoading || !fileUrl.trim()}
+                    className="whitespace-nowrap"
+                  >
+                    {isUrlLoading ? (
+                      <>
+                        <FileDown className="h-4 w-4 mr-2 animate-spin" />
+                        Fetching...
+                      </>
+                    ) : (
+                      <>
+                        <LinkIcon className="h-4 w-4 mr-2" />
+                        Fetch
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
               <CodeEditor value={code} onChange={setCode} className="min-h-[500px]" />
             </CardContent>
             <CardFooter className="flex gap-2 justify-between">
