@@ -35,7 +35,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, placeholder = 
 
   return (
     <div className={cn("relative rounded-md border bg-editor-bg", className)}>
-      <div className="flex h-full">
+      <div className="flex h-[300px]">
         {/* Line numbers column */}
         <div className="flex-none w-10 bg-editor-line border-r border-muted text-xs text-muted-foreground py-3 text-center overflow-hidden">
           {lines.map((_, i) => (
@@ -44,30 +44,27 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, placeholder = 
         </div>
         
         {/* Code editor area */}
-        <div className="relative flex-1 overflow-hidden">
-          <ScrollArea className="w-full h-full absolute inset-0">
-            <div className="min-h-full min-w-full pr-4">
-              <Textarea
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                placeholder={placeholder}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                onKeyDown={handleKeyDown}
-                className={cn(
-                  "font-mono text-sm h-full w-full resize-none bg-transparent border-0 p-3 focus-visible:ring-0 focus-visible:ring-offset-0",
-                  isFocused ? "border-primary" : "border-muted"
-                )}
-                style={{ 
-                  whiteSpace: 'pre',
-                  overflowWrap: 'normal',
-                  minHeight: '100%',
-                  minWidth: '100%'
-                }}
-              />
-            </div>
-          </ScrollArea>
-        </div>
+        <ScrollArea className="w-full h-full">
+          <div className="h-full min-w-full">
+            <Textarea
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              placeholder={placeholder}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              onKeyDown={handleKeyDown}
+              className={cn(
+                "font-mono text-sm h-full w-full resize-none bg-transparent border-0 p-3 focus-visible:ring-0 focus-visible:ring-offset-0",
+                isFocused ? "border-primary" : "border-muted"
+              )}
+              style={{ 
+                whiteSpace: 'pre',
+                overflowWrap: 'normal',
+                minWidth: '100%'
+              }}
+            />
+          </div>
+        </ScrollArea>
       </div>
     </div>
   );
