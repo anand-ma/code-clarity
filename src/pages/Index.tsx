@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,8 +7,10 @@ import { Github, FileCode, Cpu, DownloadCloud, FileDown, Link as LinkIcon } from
 import { useToast } from "@/components/ui/use-toast";
 import CodeEditor from "@/components/CodeEditor";
 import ExplanationDisplay from "@/components/ExplanationDisplay";
-import { analyzeCode } from "@/services/aiService";
+import { analyzeCode, initializeGemini } from "@/services/aiService";
 import { Input } from "@/components/ui/input";
+import { convertGithubUrlToRaw } from "@/utils/urlUtils";
+import { ApiKeyDialog } from "@/components/api-key-dialog";
 
 const Index = () => {
   const [code, setCode] = useState("");
@@ -17,44 +19,55 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState("editor");
   const [fileUrl, setFileUrl] = useState("");
   const [isUrlLoading, setIsUrlLoading] = useState(false);
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem("gemini-api-key") || "");
   const { toast } = useToast();
 
-  const handleAnalyzeCode = async () => {
-    if (!code.trim()) {
+  useEffect(() => {
+    if (apiKey) {
+      try {
+        initializeGemini(apiKey);
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to initialize Gemini API. Please check your API key.",
+          variant: "destructive",
+        });
+      }
+    }
+  }, [apiKey, toast]);
+
+  const handleApiKeyChange = (key: string) => {
+    setApiKey(key);
+    localStorage.setItem("gemini-api-key", key);
+  };
+
+  const handleAnalyze = async () => {
+    if (!apiKey) {
       toast({
-        title: "No code to analyze",
-        description: "Please enter some code in the editor.",
-        variant: "destructive"
+        title: "API Key Required",
+        description: "Please enter your Gemini API key to analyze code.",
+        variant: "destructive",
       });
       return;
     }
+
     setIsAnalyzing(true);
     try {
-      const response = await analyzeCode(code);
-      if (response.error) {
+      const result = await analyzeCode(code);
+      if (result.error) {
         toast({
-          title: "Analysis Failed",
-          description: response.error,
-          variant: "destructive"
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
         });
         return;
       }
-      setExplanation(response.text);
-      toast({
-        title: "Analysis Complete",
-        description: "Your code has been analyzed successfully."
-      });
-
-      // Switch to the explanation tab on mobile
-      if (window.innerWidth < 768) {
-        setActiveTab("explanation");
-      }
+      setExplanation(result.text);
     } catch (error) {
-      console.error("Error analyzing code:", error);
       toast({
-        title: "Analysis Failed",
-        description: "An error occurred while analyzing your code. Please try again.",
-        variant: "destructive"
+        title: "Error",
+        description: "Failed to analyze code. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsAnalyzing(false);
@@ -86,22 +99,6 @@ const Index = () => {
     }
   };
 
-  const convertGithubUrlToRaw = (url: string): string => {
-    if (url.includes('raw.githubusercontent.com')) {
-      return url;
-    }
-    
-    const githubPattern = /github\.com\/([^/]+)\/([^/]+)\/blob\/([^/]+)\/(.+)/;
-    const match = url.match(githubPattern);
-    
-    if (match) {
-      const [, user, repo, branch, path] = match;
-      return `https://raw.githubusercontent.com/${user}/${repo}/refs/heads/${branch}/${path}`;
-    }
-    
-    return url;
-  };
-
   const handleFetchFromUrl = async () => {
     if (!fileUrl.trim()) {
       toast({
@@ -117,11 +114,23 @@ const Index = () => {
       const rawUrl = convertGithubUrlToRaw(fileUrl);
       console.log("Fetching from:", rawUrl);
       
-      const response = await fetch(rawUrl);
+      const response = await fetch(rawUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'text/plain',
+        },
+        mode: 'cors',
+      });
+
       if (!response.ok) {
-        throw new Error(`Failed to fetch from URL: ${response.statusText}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
       const fetchedCode = await response.text();
+      if (!fetchedCode.trim()) {
+        throw new Error('No content received from the URL');
+      }
+
       setCode(fetchedCode);
       toast({
         title: "Code Fetched Successfully",
@@ -131,7 +140,7 @@ const Index = () => {
       console.error("Error fetching code:", error);
       toast({
         title: "Failed to Fetch Code",
-        description: "Could not load the code from the provided URL. Please check the URL and try again.",
+        description: error instanceof Error ? error.message : "Could not load the code from the provided URL. Please check the URL and try again.",
         variant: "destructive"
       });
     } finally {
@@ -149,7 +158,9 @@ const Index = () => {
               <p className="text-sm text-muted-foreground">Powered by Google Gemini AI</p>
             </div>
           </div>
-          
+          <div className="flex items-center gap-2">
+            <ApiKeyDialog apiKey={apiKey} onApiKeyChange={handleApiKeyChange} />
+          </div>
         </div>
         <Separator className="mt-6" />
       </header>
@@ -205,7 +216,7 @@ const Index = () => {
                   <DownloadCloud className="h-4 w-4 mr-2" />
                   Load Sample
                 </Button>
-                <Button onClick={handleAnalyzeCode} disabled={isAnalyzing} className="text-sm">
+                <Button onClick={handleAnalyze} disabled={isAnalyzing} className="text-sm">
                   {isAnalyzing ? <>
                       <Cpu className="h-4 w-4 mr-2 animate-spin" />
                       Analyzing...
@@ -269,7 +280,7 @@ const Index = () => {
                 <DownloadCloud className="h-4 w-4 mr-2" />
                 Load Sample
               </Button>
-              <Button onClick={handleAnalyzeCode} disabled={isAnalyzing}>
+              <Button onClick={handleAnalyze} disabled={isAnalyzing}>
                 {isAnalyzing ? <>
                     <Cpu className="h-4 w-4 mr-2 animate-spin" />
                     Analyzing...
