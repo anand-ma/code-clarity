@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -87,6 +86,22 @@ const Index = () => {
     }
   };
 
+  const convertGithubUrlToRaw = (url: string): string => {
+    if (url.includes('raw.githubusercontent.com')) {
+      return url;
+    }
+    
+    const githubPattern = /github\.com\/([^/]+)\/([^/]+)\/blob\/([^/]+)\/(.+)/;
+    const match = url.match(githubPattern);
+    
+    if (match) {
+      const [, user, repo, branch, path] = match;
+      return `https://raw.githubusercontent.com/${user}/${repo}/refs/heads/${branch}/${path}`;
+    }
+    
+    return url;
+  };
+
   const handleFetchFromUrl = async () => {
     if (!fileUrl.trim()) {
       toast({
@@ -99,7 +114,10 @@ const Index = () => {
 
     setIsUrlLoading(true);
     try {
-      const response = await fetch(fileUrl);
+      const rawUrl = convertGithubUrlToRaw(fileUrl);
+      console.log("Fetching from:", rawUrl);
+      
+      const response = await fetch(rawUrl);
       if (!response.ok) {
         throw new Error(`Failed to fetch from URL: ${response.statusText}`);
       }
