@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from '@/lib/utils';
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CodeEditorProps {
   value: string;
@@ -12,7 +13,8 @@ interface CodeEditorProps {
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, placeholder = "Paste or type your code here...", className }) => {
   const [isFocused, setIsFocused] = useState(false);
-
+  const lines = value.split('\n');
+  
   // Handle tab key in textarea
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Tab') {
@@ -33,24 +35,34 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ value, onChange, placeholder = 
 
   return (
     <div className={cn("relative rounded-md border bg-editor-bg", className)}>
-      <div className="absolute top-0 left-0 w-8 h-full bg-editor-line border-r border-muted flex flex-col items-center pt-3 text-xs text-muted-foreground">
-        {value.split('\n').map((_, i) => (
-          <div key={i} className="h-6 w-full text-center">{i + 1}</div>
-        ))}
+      <div className="flex">
+        {/* Line numbers column */}
+        <div className="flex-none w-10 bg-editor-line border-r border-muted text-xs text-muted-foreground py-3">
+          {lines.map((_, i) => (
+            <div key={i} className="h-6 flex items-center justify-center">{i + 1}</div>
+          ))}
+        </div>
+        
+        {/* Code editor area */}
+        <ScrollArea className="w-full h-full">
+          <Textarea
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={placeholder}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            onKeyDown={handleKeyDown}
+            className={cn(
+              "font-mono text-sm min-h-[300px] w-full resize-none bg-transparent border-0 p-3 focus-visible:ring-0 focus-visible:ring-offset-0",
+              isFocused ? "border-primary" : "border-muted"
+            )}
+            style={{ 
+              whiteSpace: 'pre',
+              overflowWrap: 'normal'
+            }}
+          />
+        </ScrollArea>
       </div>
-      
-      <Textarea
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        onKeyDown={handleKeyDown}
-        className={cn(
-          "font-mono text-sm min-h-[300px] resize-none bg-transparent pl-10 pr-4 py-3 focus-visible:ring-1 focus-visible:ring-ring",
-          isFocused ? "border-primary" : "border-muted"
-        )}
-      />
     </div>
   );
 };
