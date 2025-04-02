@@ -308,8 +308,8 @@ const Index = () => {
       </div>
       
       <footer className="mt-12 text-center text-sm text-muted-foreground">
-        <p>This app simulates the use of Google Gemini AI for code analysis.</p>
-        <p className="mt-1">In a production environment, it would connect to a real API.</p>
+        <p>© 2025 Code Clarity. All rights reserved.</p>
+        <p className="mt-2">Made with ❤️ by Funnylabs</p>
       </footer>
     </div>;
 };
