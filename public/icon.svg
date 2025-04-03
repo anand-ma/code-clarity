@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#1e1e1e"/>
+  
+  <!-- Code brackets -->
+  <path d="M160 256L120 296L160 336" stroke="#00FF9D" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M352 256L392 296L352 336" stroke="#00FF9D" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Code lines -->
+  <rect x="200" y="180" width="112" height="24" rx="4" fill="#00FF9D"/>
+  <rect x="200" y="240" width="80" height="24" rx="4" fill="#00FF9D"/>
+  <rect x="200" y="300" width="96" height="24" rx="4" fill="#00FF9D"/>
+</svg> 
