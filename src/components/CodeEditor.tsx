@@ -182,7 +182,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   };
 
   return (
-    <div className={cn("relative rounded-md border bg-editor-bg h-[500px]", className)}>
+    <div className={cn("relative rounded-md border bg-editor-bg h-[550px]", className)}>
       <ScrollArea className="h-full rounded-md">
         <div className="flex h-full min-h-full">
           {/* Line numbers column */}
