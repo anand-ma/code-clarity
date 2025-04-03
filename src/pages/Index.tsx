@@ -63,6 +63,7 @@ const Index = () => {
         return;
       }
       setExplanation(result.text);
+      setActiveTab("explanation");
     } catch (error) {
       toast({
         title: "Error",
@@ -173,50 +174,41 @@ const Index = () => {
             <TabsTrigger value="explanation">Explanation</TabsTrigger>
           </TabsList>
           <TabsContent value="editor" className="mt-4">
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Code Editor</CardTitle>
-                <CardDescription>
-                  Paste your code, load a sample, or fetch from URL
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex flex-col space-y-2">
-                  <div className="flex space-x-2">
-                    <Input
-                      placeholder="Enter file URL (e.g., GitHub raw URL)"
-                      value={fileUrl}
-                      onChange={(e) => setFileUrl(e.target.value)}
-                      className="flex-grow"
-                    />
-                    <Button 
-                      variant="outline" 
-                      onClick={handleFetchFromUrl} 
-                      disabled={isUrlLoading || !fileUrl.trim()}
-                      className="whitespace-nowrap"
-                    >
-                      {isUrlLoading ? (
-                        <>
-                          <FileDown className="h-4 w-4 mr-2 animate-spin" />
-                          Fetching...
-                        </>
-                      ) : (
-                        <>
-                          <LinkIcon className="h-4 w-4 mr-2" />
-                          Fetch
-                        </>
-                      )}
-                    </Button>
-                  </div>
+            <div className="space-y-4">
+              <div className="flex flex-col space-y-2">
+                <div className="flex flex-col space-y-2 w-full">
+                  <Input
+                    placeholder="Enter file URL (e.g., GitHub raw URL)"
+                    value={fileUrl}
+                    onChange={(e) => setFileUrl(e.target.value)}
+                    className="w-full"
+                  />
+                  <Button 
+                    onClick={handleFetchFromUrl} 
+                    disabled={isUrlLoading || !fileUrl.trim()}
+                    className="w-full"
+                  >
+                    {isUrlLoading ? (
+                      <>
+                        <FileDown className="h-4 w-4 mr-2 animate-spin" />
+                        Fetching...
+                      </>
+                    ) : (
+                      <>
+                        <LinkIcon className="h-4 w-4 mr-2" />
+                        Fetch
+                      </>
+                    )}
+                  </Button>
                 </div>
-                <CodeEditor value={code} onChange={setCode} className="min-h-[300px]" />
-              </CardContent>
-              <CardFooter className="flex gap-2 justify-between">
-                <Button variant="outline" onClick={handleFetchSample} disabled={isAnalyzing} className="text-sm">
+              </div>
+              <CodeEditor value={code} onChange={setCode} className="min-h-[300px]" />
+              <div className="flex flex-col gap-2">
+                <Button variant="outline" onClick={handleFetchSample} disabled={isAnalyzing} className="w-full text-sm">
                   <DownloadCloud className="h-4 w-4 mr-2" />
                   Load Sample
                 </Button>
-                <Button onClick={handleAnalyze} disabled={isAnalyzing} className="text-sm">
+                <Button onClick={handleAnalyze} disabled={isAnalyzing} className="w-full text-sm">
                   {isAnalyzing ? <>
                       <Cpu className="h-4 w-4 mr-2 animate-spin" />
                       Analyzing...
@@ -225,8 +217,8 @@ const Index = () => {
                       Analyze with Gemini
                     </>}
                 </Button>
-              </CardFooter>
-            </Card>
+              </div>
+            </div>
           </TabsContent>
           <TabsContent value="explanation" className="mt-4">
             <ExplanationDisplay explanation={explanation} isLoading={isAnalyzing} className="min-h-[300px]" />
@@ -254,7 +246,6 @@ const Index = () => {
                     className="flex-grow"
                   />
                   <Button 
-                    variant="outline" 
                     onClick={handleFetchFromUrl} 
                     disabled={isUrlLoading || !fileUrl.trim()}
                     className="whitespace-nowrap"
