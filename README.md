@@ -1,73 +1,92 @@
-# Welcome to your Lovable project
+# Code Clarity
 
-## Project info
+Live Demo: [https://code-clarity-explorer.vercel.app/](https://code-clarity-explorer.vercel.app/)
 
-**URL**: https://lovable.dev/projects/816957cb-3e99-48c4-81c2-dea0de6f3b39
+A modern web application built with Vite, React, TypeScript, and shadcn-ui for code clarity and visualization.
 
-## How can I edit this code?
+## Project Overview
 
-There are several ways of editing your application.
+This project is a sophisticated web application that leverages the power of Google's Generative AI (Gemini) to provide code clarity and visualization features. It's built with modern web technologies and follows best practices for performance and user experience.
 
-**Use Lovable**
+## Technologies Used
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/816957cb-3e99-48c4-81c2-dea0de6f3b39) and start prompting.
+- **Vite** - Next-generation frontend build tool
+- **React** - UI library for building user interfaces
+- **TypeScript** - Typed JavaScript at any scale
+- **shadcn-ui** - Re-usable components built with Radix UI and Tailwind CSS
+- **Tailwind CSS** - Utility-first CSS framework
+- **Google Generative AI** - For AI-powered code analysis
+- **React Query** - For efficient server state management
+- **React Router** - For client-side routing
+- **Zod** - For runtime type validation
+- **React Hook Form** - For form handling
 
-Changes made via Lovable will be committed automatically to this repo.
+## Getting Started
 
-**Use your preferred IDE**
+### Prerequisites
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Node.js & npm - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### Installation
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
+# Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Navigate to the project directory
+cd code-clarity-gemini-view
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Available Scripts
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- `npm run dev` - Start the development server with hot module replacement
+- `npm run build` - Build the application for production
+- `npm run build:dev` - Build the application in development mode
+- `npm run preview` - Preview the production build locally
+- `npm run lint` - Run ESLint to check code quality
+- `npm run generate-pwa-icons` - Generate PWA icons for the application
 
-**Use GitHub Codespaces**
+## Development Options
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Using Your Preferred IDE
 
-## What technologies are used for this project?
+1. Clone the repository
+2. Open in your preferred IDE
+3. Install dependencies with `npm install`
+4. Start development server with `npm run dev`
+5. Make changes and commit them
 
-This project is built with:
+### GitHub Integration
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- Edit files directly in GitHub using the "Edit" button
+- Use GitHub Codespaces for a complete development environment
+- Changes made via Lovable will be automatically committed to this repo
 
-## How can I deploy this project?
+## Project Structure
 
-Simply open [Lovable](https://lovable.dev/projects/816957cb-3e99-48c4-81c2-dea0de6f3b39) and click on Share -> Publish.
+The project follows a modern React application structure with:
 
-## Can I connect a custom domain to my Lovable project?
+- `/src` - Source code directory
+- `/public` - Static assets
+- `/components` - Reusable React components
+- `/lib` - Utility functions and shared logic
+- `/styles` - Global styles and Tailwind configuration
 
-Yes it is!
+## Contributing
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## License
+
+This project is private and proprietary.
+
