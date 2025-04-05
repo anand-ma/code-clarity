@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Github, FileCode, Cpu, DownloadCloud, FileDown, Link as LinkIcon } from "lucide-react";
+import { Github, FileCode, Cpu, DownloadCloud, FileDown, Link as LinkIcon, FileOutput } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import CodeEditor from "@/components/CodeEditor";
-import ExplanationDisplay from "@/components/ExplanationDisplay";
+import ExplanationDisplay, { ExplanationRef } from "@/components/ExplanationDisplay";
 import { analyzeCode, initializeGemini } from "@/services/aiService";
 import { Input } from "@/components/ui/input";
 import { convertGithubUrlToRaw } from "@/utils/urlUtils";
@@ -21,6 +21,7 @@ const Index = () => {
   const [isUrlLoading, setIsUrlLoading] = useState(false);
   const [apiKey, setApiKey] = useState(() => localStorage.getItem("gemini-api-key") || "");
   const { toast } = useToast();
+  const explanationRef = useRef<ExplanationRef>(null);
 
   useEffect(() => {
     if (apiKey) {
@@ -149,6 +150,12 @@ const Index = () => {
     }
   };
 
+  const handleExportPDF = () => {
+    if (explanationRef.current) {
+      explanationRef.current.exportToPdf();
+    }
+  };
+
   return <div className="container p-4 py-6 md:py-10 max-w-7xl mx-auto">
       <header className="mb-8">
         <div className="flex items-center justify-between">
@@ -221,7 +228,25 @@ const Index = () => {
             </div>
           </TabsContent>
           <TabsContent value="explanation" className="mt-4">
-            <ExplanationDisplay explanation={explanation} isLoading={isAnalyzing} className="min-h-[300px]" />
+            <div className="flex justify-end mb-2">
+              {explanation && (
+                <Button 
+                  onClick={handleExportPDF}
+                  variant="ghost" 
+                  size="sm"
+                  className="hover:bg-primary/10 flex items-center text-xs"
+                >
+                  <FileOutput className="h-3.5 w-3.5 mr-1" />
+                  Export PDF
+                </Button>
+              )}
+            </div>
+            <ExplanationDisplay 
+              explanation={explanation} 
+              isLoading={isAnalyzing} 
+              className="min-h-[300px]" 
+              ref={explanationRef}
+            />
           </TabsContent>
         </Tabs>
       </div>
@@ -287,12 +312,28 @@ const Index = () => {
           <Card className="h-full flex flex-col">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">AI Explanation</CardTitle>
-              <CardDescription>
-                Understanding what your code does
+              <CardDescription className="flex justify-between items-center">
+                <span>Understanding what your code does</span>
+                {explanation && (
+                  <Button 
+                    onClick={handleExportPDF}
+                    variant="ghost" 
+                    size="sm"
+                    className="hover:bg-primary/10 flex items-center text-xs"
+                  >
+                    <FileOutput className="h-3.5 w-3.5 mr-1" />
+                    Export PDF
+                  </Button>
+                )}
               </CardDescription>
             </CardHeader>
             <CardContent className="flex-grow">
-              <ExplanationDisplay explanation={explanation} isLoading={isAnalyzing} className="h-full" />
+              <ExplanationDisplay 
+                explanation={explanation} 
+                isLoading={isAnalyzing} 
+                className="h-full" 
+                ref={explanationRef}
+              />
             </CardContent>
           </Card>
         </div>
