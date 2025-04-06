@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => ({
       manifest: {
         name: 'Code Clarity',
         short_name: 'Code Clarity',
-        description: 'A tool for code explanation and analysis using Gemini AI',
+        description: 'A tool for code explanation and analysis using AI',
         theme_color: '#1e1e1e',
         icons: [
           {

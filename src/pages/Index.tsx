@@ -13,8 +13,20 @@ import { convertGithubUrlToRaw } from "@/utils/urlUtils";
 import { ApiKeyDialog } from "@/components/api-key-dialog";
 
 const Index = () => {
-  const [code, setCode] = useState("");
-  const [explanation, setExplanation] = useState("");
+  const [code, setCode] = useState(() => {
+    // Check if localStorage is available (for SSR/build compatibility)
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem("editorContent") || "";
+    }
+    return "";
+  });
+  const [explanation, setExplanation] = useState(() => {
+    // Check if localStorage is available
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem("explanationText") || "";
+    }
+    return "";
+  });
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [activeTab, setActiveTab] = useState("editor");
   const [fileUrl, setFileUrl] = useState("");
@@ -22,6 +34,20 @@ const Index = () => {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem("gemini-api-key") || "");
   const { toast } = useToast();
   const explanationRef = useRef<ExplanationRef>(null);
+
+  useEffect(() => {
+    // Check if localStorage is available
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("editorContent", code);
+    }
+  }, [code]);
+
+  useEffect(() => {
+    // Check if localStorage is available
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("explanationText", explanation);
+    }
+  }, [explanation]);
 
   useEffect(() => {
     if (apiKey) {

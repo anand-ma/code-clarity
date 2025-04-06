@@ -6,7 +6,7 @@ A modern web application built with Vite, React, TypeScript, and shadcn-ui for c
 
 ## Project Overview
 
-This project is a sophisticated web application that leverages the power of Google's Generative AI (Gemini) to provide code clarity and visualization features. It's built with modern web technologies and follows best practices for performance and user experience.
+This project is a sophisticated web application that leverages the power of AI to provide code clarity and visualization features. It's built with modern web technologies and follows best practices for performance and user experience.
 
 ## Technologies Used
 
