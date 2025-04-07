@@ -35,6 +35,27 @@ const Index = () => {
   const { toast } = useToast();
   const explanationRef = useRef<ExplanationRef>(null);
 
+  // Helper function to render the fetch button
+  const renderFetchButton = (buttonClassName: string) => (
+    <Button 
+      onClick={handleFetchFromUrl} 
+      disabled={isUrlLoading || !fileUrl.trim()}
+      className={buttonClassName}
+    >
+      {isUrlLoading ? (
+        <>
+          <FileDown className="h-4 w-4 mr-2 animate-spin" />
+          Fetching...
+        </>
+      ) : (
+        <>
+          <LinkIcon className="h-4 w-4 mr-2" />
+          Fetch
+        </>
+      )}
+    </Button>
+  );
+
   useEffect(() => {
     // Check if localStorage is available
     if (typeof window !== 'undefined') {
@@ -216,23 +237,7 @@ const Index = () => {
                     onChange={(e) => setFileUrl(e.target.value)}
                     className="w-full"
                   />
-                  <Button 
-                    onClick={handleFetchFromUrl} 
-                    disabled={isUrlLoading || !fileUrl.trim()}
-                    className="w-full"
-                  >
-                    {isUrlLoading ? (
-                      <>
-                        <FileDown className="h-4 w-4 mr-2 animate-spin" />
-                        Fetching...
-                      </>
-                    ) : (
-                      <>
-                        <LinkIcon className="h-4 w-4 mr-2" />
-                        Fetch
-                      </>
-                    )}
-                  </Button>
+                  {renderFetchButton("w-full")}
                 </div>
               </div>
               <CodeEditor value={code} onChange={setCode} className="min-h-[300px]" />
@@ -296,23 +301,7 @@ const Index = () => {
                     onChange={(e) => setFileUrl(e.target.value)}
                     className="flex-grow"
                   />
-                  <Button 
-                    onClick={handleFetchFromUrl} 
-                    disabled={isUrlLoading || !fileUrl.trim()}
-                    className="whitespace-nowrap"
-                  >
-                    {isUrlLoading ? (
-                      <>
-                        <FileDown className="h-4 w-4 mr-2 animate-spin" />
-                        Fetching...
-                      </>
-                    ) : (
-                      <>
-                        <LinkIcon className="h-4 w-4 mr-2" />
-                        Fetch
-                      </>
-                    )}
-                  </Button>
+                  {renderFetchButton("whitespace-nowrap")}
                 </div>
               </div>
               <CodeEditor value={code} onChange={setCode} className="min-h-[500px]" />
