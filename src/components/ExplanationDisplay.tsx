@@ -26,7 +26,7 @@ interface ExplanationDisplayProps {
 }
 
 const ExplanationDisplay = forwardRef<ExplanationRef, ExplanationDisplayProps>(
-  ({ explanation, isLoading, className = "" }, ref) => {
+  ({ explanation }, ref) => {
     const contentRef = useRef<HTMLDivElement>(null);
     
     // Export function to be exposed to parent components

@@ -72,23 +72,3 @@ ${code}
     };
   }
 }
-
-// Helper functions for the mock service
-function detectLanguage(code: string): string {
-  if (code.includes('def ') && code.includes('import ')) return 'Python';
-  if (code.includes('function') && code.includes('var ')) return 'JavaScript';
-  if (code.includes('function') && code.includes('let ')) return 'JavaScript';
-  if (code.includes('class') && code.includes('public ')) return 'Java or C#';
-  if (code.includes('<html>') || code.includes('</div>')) return 'HTML';
-  if (code.includes('useState') || code.includes('React')) return 'React';
-  return 'programming';
-}
-
-function guessCodePurpose(code: string): string {
-  if (code.includes('fetch') || code.includes('axios')) return 'API communication';
-  if (code.includes('render') || code.includes('component')) return 'user interface development';
-  if (code.includes('test') || code.includes('assert')) return 'testing';
-  if (code.includes('class') && code.includes('model')) return 'data modeling';
-  if (code.includes('router') || code.includes('path')) return 'routing or navigation';
-  return 'general programming tasks';
-}
