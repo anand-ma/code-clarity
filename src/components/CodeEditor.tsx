@@ -46,35 +46,6 @@ interface CodeEditorProps {
   language?: string;
 }
 
-const LANGUAGE_MAP: { [key: string]: string } = {
-  'js': 'javascript',
-  'jsx': 'jsx',
-  'ts': 'typescript',
-  'tsx': 'tsx',
-  'py': 'python',
-  'java': 'java',
-  'c': 'c',
-  'cpp': 'cpp',
-  'cs': 'csharp',
-  'rb': 'ruby',
-  'rs': 'rust',
-  'go': 'go',
-  'php': 'php',
-  'sql': 'sql',
-  'html': 'markup',
-  'xml': 'markup',
-  'css': 'css',
-  'scss': 'sass',
-  'sass': 'sass',
-  'less': 'less',
-  'json': 'json',
-  'yml': 'yaml',
-  'yaml': 'yaml',
-  'md': 'markdown',
-  'sh': 'bash',
-  'bash': 'bash'
-};
-
 const detectLanguage = (code: string): string => {
   // Simple language detection based on file extension or content
   const firstLine = code.split('\n')[0].toLowerCase();

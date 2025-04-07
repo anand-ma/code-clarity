@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Github, FileCode, Cpu, DownloadCloud, FileDown, Link as LinkIcon, FileOutput } from "lucide-react";
+import { FileCode, Cpu, DownloadCloud, FileDown, Link as LinkIcon, FileOutput } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import CodeEditor from "@/components/CodeEditor";
 import ExplanationDisplay, { ExplanationRef } from "@/components/ExplanationDisplay";
